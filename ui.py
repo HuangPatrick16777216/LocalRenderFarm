@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import socket
 import bpy
 from bpy.types import Panel
 
@@ -28,7 +29,27 @@ class RENDERFARM_PT_Main(Panel):
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
+        from .operators import status, conn
         settings = context.scene.local_render_farm
+        layout = self.layout
+
+        layout.prop(settings, "compType", expand=True)
+        if settings.compType == "0":
+            if status == "UNCONN":
+                layout.label(text=f"Your local IP is {socket.gethostbyname(socket.gethostname())}")
+            elif status == "WAITING":
+                layout.label(text="Waiting for clients.")
+                if len(conn.clients) > 0:
+                    layout.label(text="Connected clients:")
+                    for c in conn.clients:
+                        layout.label(text=c.addr[0] + " " + c.addr[1])
+
+        else:
+            if status == "UNCONN":
+                layout.prop(settings, "serverIp")
+                layout.operator("local_render_farm.connect")
+            elif status == "WAITING":
+                layout.label(text="Waiting for server to start...")
 
 
 classes = (
