@@ -1,0 +1,36 @@
+#  ##### BEGIN GPL LICENSE BLOCK #####
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ##### END GPL LICENSE BLOCK #####
+
+bl_info = {
+    "name":        "Local Render Farm",
+    "description": "Render faster by rendering on all local computers.",
+    "author":      "Patrick Huang",
+    "version":     (0, 0, 1),
+    "blender":     (2, 80, 0),
+    "location":    "Properties >> Render >> Local Render Farm",
+    "warning":     "",
+    "doc_url":     "https://github.com/HuangPatrick16777216/LocalRenderFarm",
+    "tracker_url": "https://github.com/HuangPatrick16777216/LocalRenderFarm/issues",
+    "category":    "Render"
+}
+
+
+def register():
+    pass
+
+def unregister():
+    pass
