@@ -31,6 +31,7 @@ class Server:
 
     def Start(self):
         threading.Thread(target=self.Accept, args=()).start()
+        threading.Thread(target=self.Cleanup, args=()).start()
 
     def Accept(self):
         self.server.listen()
