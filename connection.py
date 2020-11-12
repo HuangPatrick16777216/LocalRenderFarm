@@ -57,10 +57,29 @@ class AcceptedClient:
 
     def Start(self):
         while True:
+            pass
+
+    def Receive(self):
+        data = self.conn.recv(self.msgLen)
+        return pickle.loads(data)
+
+    def Send(self, obj):
+        data = pickle.dumps(obj)
+        self.conn.send(data)
+
+
+class Client:
+    msgLen = 1024
+
+    def __init__(self, ip, port):
+        self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.conn.connect((ip, port))
+
+    def Start(self):
+        while True:
             msg = self.Receive()
             
             if msg["type"] == "quit":
-                self.active = False
                 self.conn.close()
                 return
 
