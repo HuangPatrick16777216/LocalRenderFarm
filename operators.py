@@ -47,9 +47,39 @@ class RENDERFARM_OT_StartRender(Operator):
     bl_description = "Start rendering on all clients."
     bl_idname = "local_render_farm.start_render"
 
+    popup = True
+
     def execute(self, context):
         settings = context.scene.local_render_farm
+
+        if not bpy.data.is_saved:
+            self.report({"ERROR"}, "Blend file is not saved.")
+            return {"CANCELLED"}
+        if bpy.data.is_dirty:
+            self.report({"ERROR"}, "Blend file is dirty (unsaved changes).")
+            return {"CANCELLED"}
+
+        if self.popup:
+            bpy.ops.local_render_farm.start_render_popup("INVOKE_DEFAULT")
+            return {"FINISHED"}
+
         return {"FINISHED"}
+
+
+class RENDERFARM_OT_StartRenderPopup(Operator):
+    bl_label = "Are you sure?"
+    bl_description = "Are you sure you want to start rendering?"
+    bl_idname = "local_render_farm.start_render_popup"
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="Are you sure you want to start rendering?")
+
+    def execute(self, context):
+        bpy.ops.local_render_farm.start_render(popup=False)
 
 
 class RENDERFARM_OT_Connect(Operator):
