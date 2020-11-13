@@ -15,11 +15,14 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import os
 import time
 import socket
 import threading
 import pickle
+import bpy
 
+PARENT = os.path.dirname(__file__)
 
 class Server:
     def __init__(self, ip, port):
@@ -44,7 +47,6 @@ class Server:
 
             conn, addr = self.server.accept()
             client = AcceptedClient(conn, addr)
-            threading.Thread(target=client, args=()).start()
             self.clients.append(client)
 
     def Cleanup(self):
@@ -60,15 +62,18 @@ class Server:
 
 
 class AcceptedClient:
-    msgLen = 1024
+    msgLen = 4294967296
 
     def __init__(self, conn, addr):
         self.active = True
         self.conn = conn
         self.addr = addr
 
-    def Start(self):
-        pass
+    def RenderFrame(self, frame):
+        self.Send({"type": "render", "frame": frame})
+        result = self.Receive()
+        if result["type"] == "result":
+            return result["img"]
 
     def Receive(self):
         data = self.conn.recv(self.msgLen)
@@ -80,7 +85,7 @@ class AcceptedClient:
 
 
 class Client:
-    msgLen = 1024
+    msgLen = 4294967296
 
     def __init__(self, ip, port):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -95,8 +100,14 @@ class Client:
                 self.conn.close()
                 return
 
-            elif msg["type"] == "setmsglen":
-                self.msgLen = msg["msglen"]
+            elif msg["type"] == "render":
+                bpy.context.scene.frame_current = msg["frame"]
+                bpy.ops.render.render(use_viewport=True)
+                bpy.data.images["Render Result"].save_render(filepath=os.path.join(PARENT, "tmp.jpg"))
+
+                with open(os.path.join(PARENT, "tmp.jpg"), "rb") as img:
+                    data = img.read()
+                self.Send({"type": "result", "img": data})
 
     def Receive(self):
         data = self.conn.recv(self.msgLen)
