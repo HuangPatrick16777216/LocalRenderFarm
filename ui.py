@@ -51,14 +51,23 @@ class RENDERFARM_PT_Main(Panel):
                 if len(conn.clients) > 0:
                     layout.label(text="Connected clients:")
                     for c in conn.clients:
-                        layout.label(text=str(c.addr[0])+" "+str(c.addr[1]))
+                        layout.label(text=f"  * {c.addr[0]}  {c.addr[1]}")
+
+            elif status == "RENDERING":
+                layout.label(text="Rendering has started.")
+                
+                layout.separator()
+                layout.label(text="Client statuses:")
 
         else:
             if status == "UNCONN":
                 layout.prop(settings, "serverIp")
                 layout.operator("local_render_farm.connect")
             elif status == "WAITING":
+                layout.label(text=f"Your local IP is {socket.gethostbyname(socket.gethostname())}")
                 layout.label(text="Waiting for server to start...")
+            elif status == "RENDERING":
+                layout.label(text="Rendering")
 
 
 classes = (
