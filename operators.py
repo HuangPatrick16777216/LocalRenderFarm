@@ -63,6 +63,9 @@ class RENDERFARM_OT_StartRender(Operator):
             bpy.ops.local_render_farm.start_render_popup("INVOKE_DEFAULT")
             return {"FINISHED"}
 
+        global status, conn
+        status = "RENDERING"
+
         return {"FINISHED"}
 
 
