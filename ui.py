@@ -33,16 +33,25 @@ class RENDERFARM_PT_Main(Panel):
         settings = context.scene.local_render_farm
         layout = self.layout
 
-        layout.prop(settings, "compType", expand=True)
+        if status == "UNCONN":
+            layout.prop(settings, "compType", expand=True)
+
         if settings.compType == "0":
             if status == "UNCONN":
                 layout.label(text=f"Your local IP is {socket.gethostbyname(socket.gethostname())}")
+                layout.operator("local_render_farm.start_server")
+
             elif status == "WAITING":
                 layout.label(text="Waiting for clients.")
+                layout.label(text=f"Your local IP is {socket.gethostbyname(socket.gethostname())}")
+                layout.prop(settings, "serverRender")
+                layout.operator("local_render_farm.start_render")
+                layout.separator()
+
                 if len(conn.clients) > 0:
                     layout.label(text="Connected clients:")
                     for c in conn.clients:
-                        layout.label(text=c.addr[0] + " " + c.addr[1])
+                        layout.label(text=str(c.addr[0])+" "+str(c.addr[1]))
 
         else:
             if status == "UNCONN":
