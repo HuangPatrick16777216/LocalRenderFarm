@@ -22,6 +22,7 @@ from .connection import Client, Server
 
 status = None
 conn = None
+active = False
 
 
 class RENDERFARM_OT_StartServer(Operator):
@@ -30,13 +31,24 @@ class RENDERFARM_OT_StartServer(Operator):
     bl_idname = "local_render_farm.start_server"
 
     def execute(self, context):
-        global status, conn
+        global status, conn, active
         settings = context.scene.local_render_farm
 
+        active = True
         conn = Server(socket.gethostbyname(socket.gethostname()), 5555)
         conn.Start()
 
         status = "WAITING"
+        return {"FINISHED"}
+
+
+class RENDERFARM_OT_StartRender(Operator):
+    bl_label = "Start Rendering"
+    bl_description = "Start rendering on all clients."
+    bl_idname = "local_render_farm.start_render"
+
+    def execute(self, context):
+        settings = context.scene.local_render_farm
         return {"FINISHED"}
 
 
@@ -46,9 +58,10 @@ class RENDERFARM_OT_Connect(Operator):
     bl_idname = "local_render_farm.connect"
 
     def execute(self, context):
-        global status, conn
+        global status, conn, active
         settings = context.scene.local_render_farm
 
+        active = True
         conn = Client(settings.serverIp, 5555)
 
         status = "WAITING"
@@ -57,17 +70,22 @@ class RENDERFARM_OT_Connect(Operator):
 
 classes = (
     RENDERFARM_OT_StartServer,
+    RENDERFARM_OT_StartRender,
     RENDERFARM_OT_Connect,
 )
 
 def register():
-    global status, conn
+    global status, conn, active
     status = "UNCONN"
     conn = None
+    active = False
 
     for cls in classes:
         bpy.utils.register_class(cls)
 
 def unregister():
+    global active
+    active = False
+    
     for cls in classes:
         bpy.utils.unregister_class(cls)
