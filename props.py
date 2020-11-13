@@ -35,6 +35,12 @@ class RenderFarmProps(PropertyGroup):
         description="Local IP address of server computer."
     )
 
+    serverRender: BoolProperty(
+        name="Render on server?",
+        description="Do rendering on server?",
+        default=True
+    )
+
 
 def register():
     bpy.utils.register_class(RenderFarmProps)
