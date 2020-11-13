@@ -18,6 +18,7 @@
 import socket
 import bpy
 from bpy.types import Operator
+from bpy.props import BoolProperty
 from .connection import Client, Server
 
 status = None
@@ -47,7 +48,11 @@ class RENDERFARM_OT_StartRender(Operator):
     bl_description = "Start rendering on all clients."
     bl_idname = "local_render_farm.start_render"
 
-    popup = True
+    popup: BoolProperty(
+        name="Show popup warning?",
+        description="Show user warning?",
+        default=True
+    )
 
     def execute(self, context):
         settings = context.scene.local_render_farm
@@ -83,6 +88,7 @@ class RENDERFARM_OT_StartRenderPopup(Operator):
 
     def execute(self, context):
         bpy.ops.local_render_farm.start_render(popup=False)
+        return {"FINISHED"}
 
 
 class RENDERFARM_OT_Connect(Operator):
@@ -104,6 +110,7 @@ class RENDERFARM_OT_Connect(Operator):
 classes = (
     RENDERFARM_OT_StartServer,
     RENDERFARM_OT_StartRender,
+    RENDERFARM_OT_StartRenderPopup,
     RENDERFARM_OT_Connect,
 )
 
