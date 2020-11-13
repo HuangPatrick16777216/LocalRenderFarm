@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import time
 import socket
 import threading
 import pickle
@@ -36,6 +37,11 @@ class Server:
     def Accept(self):
         self.server.listen()
         while True:
+            from .operators import active
+            if not active:
+                self.server.close()
+                return
+
             conn, addr = self.server.accept()
             client = AcceptedClient(conn, addr)
             threading.Thread(target=client, args=()).start()
@@ -43,6 +49,11 @@ class Server:
 
     def Cleanup(self):
         while True:
+            from .operators import active
+            if not active:
+                return
+
+            time.sleep(0.1)
             for i, c in enumerate(self.clients):
                 if not c.active:
                     del self.clients[i]
@@ -57,8 +68,7 @@ class AcceptedClient:
         self.addr = addr
 
     def Start(self):
-        while True:
-            pass
+        pass
 
     def Receive(self):
         data = self.conn.recv(self.msgLen)
@@ -80,7 +90,8 @@ class Client:
         while True:
             msg = self.Receive()
             
-            if msg["type"] == "quit":
+            from .operators import active
+            if msg["type"] == "quit" or not active:
                 self.conn.close()
                 return
 
