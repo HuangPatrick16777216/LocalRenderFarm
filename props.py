@@ -41,6 +41,12 @@ class RenderFarmProps(PropertyGroup):
         default=True
     )
 
+    outputDir: StringProperty(
+        name="Output",
+        description="Output directory of render",
+        subtype="DIR_PATH"
+    )
+
 
 def register():
     bpy.utils.register_class(RenderFarmProps)
