@@ -62,7 +62,7 @@ class Server:
 
 
 class AcceptedClient:
-    msgLen = 4294967296
+    msgLen = 16777216
 
     def __init__(self, conn, addr):
         self.active = True
@@ -85,7 +85,7 @@ class AcceptedClient:
 
 
 class Client:
-    msgLen = 4294967296
+    msgLen = 16777216
 
     def __init__(self, ip, port):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
