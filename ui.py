@@ -44,7 +44,7 @@ class RENDERFARM_PT_Main(Panel):
             elif status == "WAITING":
                 layout.label(text="Waiting for clients.")
                 layout.label(text=f"Your local IP is {socket.gethostbyname(socket.gethostname())}")
-                layout.prop(settings, "serverRender")
+                #layout.prop(settings, "serverRender")
                 layout.prop(settings, "outputDir")
                 layout.operator("local_render_farm.start_render")
                 layout.separator()
