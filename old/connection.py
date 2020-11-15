@@ -68,12 +68,15 @@ class AcceptedClient:
         self.active = True
         self.conn = conn
         self.addr = addr
+        self.rendering = False
 
     def RenderFrame(self, frame):
+        self.rendering = True
         self.Send({"type": "render", "frame": frame})
         result = self.Receive()
         if result["type"] == "result":
             return result["img"]
+        self.rendering = False
 
     def Receive(self):
         data = self.conn.recv(self.msgLen)

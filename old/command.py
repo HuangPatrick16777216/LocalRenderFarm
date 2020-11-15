@@ -14,3 +14,25 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 # ##### END GPL LICENSE BLOCK #####
+
+import os
+import threading
+
+
+def Render(clients, startFrame, endFrame, outDir):
+    currFrame = startFrame
+    while True:
+        for c in clients:
+            if currFrame > endFrame:
+                return
+
+            if not c.rendering:
+                threading.Thread(target=RenderImage, args=(c, currFrame, outDir)).start()
+                currFrame += 1
+
+
+def RenderImage(client, frame, outDir):
+    image = client.RenderFrame(frame)
+    path = os.path.join(outDir, f"{frame}.jpg")
+    with open(path, "wb") as file:
+        file.write(image)

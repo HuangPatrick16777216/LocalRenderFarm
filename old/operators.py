@@ -16,10 +16,12 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import socket
+import threading
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
 from .connection import Client, Server
+from .command import Render
 
 status = None
 conn = None
@@ -70,6 +72,7 @@ class RENDERFARM_OT_StartRender(Operator):
 
         global status, conn
         status = "RENDERING"
+        threading.Thread(target=Render, args=(conn.clients, bpy.context.scene.frame_start, bpy.context.scene.frame_end, settings.outputDir)).start()
 
         return {"FINISHED"}
 
