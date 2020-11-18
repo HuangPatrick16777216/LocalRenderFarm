@@ -35,7 +35,9 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    bpy.types.Scene.local_render_farm_server = PointerProperty(type=RenderFarmServer_Props)
 
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
+    del bpy.types.Scene.local_render_farm_server
