@@ -17,6 +17,9 @@
 
 import socket
 import threading
+import string
+import random
+import pickle
 
 
 class Server:
@@ -37,9 +40,33 @@ class Server:
         self.server.listen()
         while True:
             conn, addr = self.server.accept()
+            client = Client(conn, addr)
+            threading.Thread(target=client.Start).start()
+            self.clients.append(client)
 
     def Cleanup(self):
         while True:
             for i, client in enumerate(self.clients):
                 if not client.active:
                     del self.clients[i]
+
+
+class Client:
+    msgLen = 16777216
+
+    def __init__(self, conn, addr):
+        self.conn = conn
+        self.addr = addr
+        self.active = True
+        self.hash = "".join(random.choices(string.ascii_lowercase+string.digits, k=10))
+    
+    def Start(self):
+        self.Send({"type": "init", "hash": self.hash})
+
+    def Send(self, obj):
+        data = pickle.dumps(obj)
+        self.conn.send(data)
+
+    def Receive(self):
+        data = self.conn.recv(self.msgLen)
+        return pickle.loads(data)
