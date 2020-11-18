@@ -28,8 +28,12 @@ bl_info = {
     "category": "Render"
 }
 
+from . import props, operators, ui
+
 modules = (
-    
+    props,
+    operators,
+    ui
 )
 
 def register():
