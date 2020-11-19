@@ -15,8 +15,13 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import threading
 import bpy
 from bpy.types import Operator
+from .connection import Client
+
+conn = None
+status = None
 
 
 class RENDERFARMCLIENT_OT_Connect(Operator):
@@ -25,6 +30,13 @@ class RENDERFARMCLIENT_OT_Connect(Operator):
     bl_idname = "local_render_farm_client.connect"
 
     def execute(self, context):
+        global conn, status
+        settings = context.scene.local_render_farm_client
+
+        status = "CONNECTED"
+        conn = Client(settings.serverIp, 5555)
+        threading.Thread(target=conn.Start).start()
+
         return {"FINISHED"}
 
 
@@ -33,6 +45,10 @@ classes = (
 )
 
 def register():
+    global conn, status
+    conn = None
+    status = "NOT_CONNECTED"
+
     for cls in classes:
         bpy.utils.register_class(cls)
 

@@ -28,6 +28,7 @@ class Client:
     def __init__(self, ip, port):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((ip, port))
+        self.hash = ""
     
     def Start(self):
         while True:

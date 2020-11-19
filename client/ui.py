@@ -28,8 +28,16 @@ class RENDERFARMCLIENT_PT_Main(Panel):
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
+        from .operators import status, conn
         layout = self.layout
         settings = context.scene.local_render_farm_client
+
+        if status == "NOT_CONNECTED":
+            layout.prop(settings, "serverIp")
+            layout.operator("local_render_farm_client.connect")
+        elif status == "CONNECTED":
+            layout.label(text="Waiting for server to begin rendering.")
+            layout.label(text=f"Your hash is {conn.hash}")
 
 
 classes = (

@@ -16,6 +16,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import socket
+import time
 import threading
 import string
 import random
@@ -49,6 +50,8 @@ class Server:
             for i, client in enumerate(self.clients):
                 if not client.active:
                     del self.clients[i]
+
+            time.sleep(0.01)
 
 
 class Client:
