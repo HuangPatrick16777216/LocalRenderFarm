@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import socket
 import bpy
 from bpy.types import Panel
 
@@ -28,8 +29,16 @@ class RENDERFARMSERVER_PT_Main(Panel):
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
+        from .operators import status, server
         layout = self.layout
         settings = context.scene.local_render_farm_server
+
+        if status == "NOT_STARTED":
+            layout.label(text=f"Your local IP address is {socket.gethostbyname(socket.gethostname())}")
+            layout.operator("local_render_farm_server.start_server")
+        elif status == "STARTED":
+            layout.label(text=f"Your local IP address is {socket.gethostbyname(socket.gethostname())}")
+            layout.label(text=f"{len(server.clients)} clients have connected.")
 
 
 classes = (

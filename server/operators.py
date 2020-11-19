@@ -17,6 +17,10 @@
 
 import bpy
 from bpy.types import Operator
+from .connection import Server
+
+server = None
+status = None
 
 
 class RENDERFARMSERVER_OT_StartServer(Operator):
@@ -25,6 +29,11 @@ class RENDERFARMSERVER_OT_StartServer(Operator):
     bl_idname = "local_render_farm_server.start_server"
 
     def execute(self, context):
+        global server, status
+        server = Server()
+        server.Start()
+        status = "STARTED"
+
         return {"FINISHED"}
 
 
@@ -33,6 +42,10 @@ classes = (
 )
 
 def register():
+    global server, status
+    server = None
+    status = "NOT_STARTED"
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
