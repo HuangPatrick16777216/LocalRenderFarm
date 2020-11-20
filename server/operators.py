@@ -15,10 +15,12 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import threading
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
 from .connection import Server
+from .render import Render
 
 server = None
 status = None
@@ -47,10 +49,14 @@ class RENDERFARMSERVER_OT_StartRender(Operator):
 
     def execute(self, context):
         global server, status
+        settings = context.scene.local_render_farm_server
 
         if self.showWarning:
             bpy.ops.local_render_farm_server.start_render_warning("INVOKE_DEFAULT")
             return {"FINISHED"}
+
+        status = "RENDERING"
+        threading.Thread(target=Render, args=(server, context.scene.frame_start, context.scene.frame_end, settings.outPath)).start()
         
         return {"FINISHED"}
 
