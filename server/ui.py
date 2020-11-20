@@ -39,6 +39,10 @@ class RENDERFARMSERVER_PT_Main(Panel):
         elif status == "STARTED":
             layout.label(text=f"Your local IP address is {socket.gethostbyname(socket.gethostname())}")
             layout.label(text=f"{len(server.clients)} clients have connected.")
+            layout.separator()
+            layout.label(text="Connected clients:")
+            for cli in server.clients:
+                layout.label(text=f"  * {cli.addr[0]}")
 
 
 classes = (

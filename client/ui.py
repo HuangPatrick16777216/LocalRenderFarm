@@ -37,7 +37,6 @@ class RENDERFARMCLIENT_PT_Main(Panel):
             layout.operator("local_render_farm_client.connect")
         elif status == "CONNECTED":
             layout.label(text="Waiting for server to begin rendering.")
-            layout.label(text=f"Your hash is {conn.hash}")
 
 
 classes = (
