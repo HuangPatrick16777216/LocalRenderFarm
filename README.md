@@ -9,3 +9,7 @@ Blender Add-on to create a local render farm.
 4. Connect all clients by typing in the server IP and clicking *Connect*.
 5. Make sure all clients have JPEG set as the output paramter.
 6. Set the output directory on the server, and start the render.
+
+## Notes:
+* This add-on uses *threading*, or executing multiple programs at once. This may leave a program running even after Blender is closed. To stop the program, open the task manager and end all tasks called "Blender".
+* Please do not try to use this add-on without following the steps exactly, because it may mess up your files.
