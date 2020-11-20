@@ -15,11 +15,13 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import os
 import socket
 import threading
 import string
 import random
 import pickle
+import bpy
 
 
 class Client:
@@ -29,6 +31,7 @@ class Client:
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((ip, port))
         self.hash = ""
+        self.filePath = os.path.join(os.path.realpath(os.path.dirname(__file__)), self.hash+".jpg")
     
     def Start(self):
         while True:
@@ -36,6 +39,14 @@ class Client:
             if msg["type"] == "init":
                 self.hash = msg["hash"]
                 print(self.hash)
+
+            elif msg["type"] == "render":
+                bpy.context.scene.frame_set(msg["frame"])
+                bpy.ops.render.render(use_viewport=True)
+                bpy.data.images.get("Render Result").save_render(self.filePath)
+                with open(self.filePath, "rb") as imgFile:
+                    data = imgFile.read()
+                self.Send({"type": "image", "frame": msg["frame"], "image": data})
 
     def Send(self, obj):
         data = pickle.dumps(obj)
