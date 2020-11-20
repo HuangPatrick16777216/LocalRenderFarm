@@ -38,7 +38,7 @@ class Client:
             msg = self.Receive()
             if msg["type"] == "init":
                 self.hash = msg["hash"]
-                print(self.hash)
+                self.filePath = os.path.join(os.path.realpath(os.path.dirname(__file__)), self.hash+".jpg")
 
             elif msg["type"] == "render":
                 bpy.context.scene.frame_set(msg["frame"])
