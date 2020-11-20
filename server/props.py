@@ -27,6 +27,12 @@ class RenderFarmServer_Props(PropertyGroup):
         default=True
     )
 
+    outPath: StringProperty(
+        name="Output",
+        description="Output directory",
+        subtype="DIR_PATH"
+    )
+
 
 classes = (
     RenderFarmServer_Props,
