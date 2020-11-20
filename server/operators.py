@@ -17,6 +17,7 @@
 
 import bpy
 from bpy.types import Operator
+from bpy.props import BoolProperty
 from .connection import Server
 
 server = None
@@ -37,8 +38,44 @@ class RENDERFARMSERVER_OT_StartServer(Operator):
         return {"FINISHED"}
 
 
+class RENDERFARMSERVER_OT_StartRender(Operator):
+    bl_label = "Start Render"
+    bl_description = "Start rendering on all computers"
+    bl_idname = "local_render_farm_server.start_render"
+
+    showWarning: BoolProperty(default=True)
+
+    def execute(self, context):
+        global server, status
+
+        if self.showWarning:
+            bpy.ops.local_render_farm_server.start_render_warning("INVOKE_DEFAULT")
+            return {"FINISHED"}
+        
+        return {"FINISHED"}
+
+
+class RENDERFARMSERVER_OT_StartRenderWarning(Operator):
+    bl_label = "Are you sure?"
+    bl_description = "Are you sure you want to start the render?"
+    bl_idname = "local_render_farm_server.start_render_warning"
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="Are you sure you want to start the render?")
+
+    def execute(self, context):
+        bpy.ops.local_render_farm_server.start_render(showWarning=False)
+        return {"FINISHED"}
+
+
 classes = (
     RENDERFARMSERVER_OT_StartServer,
+    RENDERFARMSERVER_OT_StartRender,
+    RENDERFARMSERVER_OT_StartRenderWarning
 )
 
 def register():

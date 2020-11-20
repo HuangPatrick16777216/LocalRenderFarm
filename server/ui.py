@@ -37,6 +37,7 @@ class RENDERFARMSERVER_PT_Main(Panel):
             layout.label(text=f"Your local IP address is {socket.gethostbyname(socket.gethostname())}")
             layout.operator("local_render_farm_server.start_server")
         elif status == "STARTED":
+            layout.operator("local_render_farm_server.start_render")
             layout.label(text=f"Your local IP address is {socket.gethostbyname(socket.gethostname())}")
             layout.label(text=f"{len(server.clients)} clients have connected.")
             layout.separator()
