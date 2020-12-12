@@ -34,6 +34,8 @@ class RenderServerProps(PropertyGroup):
         subtype="DIR_PATH"
     )
 
+    hover: StringProperty()
+
     frame_start: IntProperty(
         name="Start",
         description="Starting frame to render (inclusive)",

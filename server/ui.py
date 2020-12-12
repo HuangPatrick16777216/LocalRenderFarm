@@ -15,7 +15,6 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-import time
 import bpy
 from bpy.types import Panel
 
@@ -58,15 +57,13 @@ class RENDERSERVER_PT_Main(Panel):
 
         elif settings.status == "RENDERING":
             layout.label(text="Rendering")
+            layout.prop(settings, "hover", text="Hover to refresh.")
             box = layout.box()
             box.label(text="Client statuses:")
 
             col = box.column(align=True)
             for client in server.clients:
                 col.label(text=f"{client.addr[0]}: {client.curr_frame}")
-
-            time.sleep(0.01)
-            self.draw()
 
 
 classes = (
