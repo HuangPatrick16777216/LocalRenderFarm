@@ -61,9 +61,11 @@ class Client:
         self.conn = conn
         self.addr = addr
         self.rendering = False
+        self.curr_frame = None
 
     def render(self, path, frame):
         self.rendering = True
+        self.curr_frame = frame
         self.send({"type": "render", "frame": frame})
 
         while True:
@@ -111,6 +113,7 @@ class RENDERSERVER_OT_Render(Operator):
     def execute(self, context):
         settings = context.scene.render_server
         threading.Thread(target=render, args=(settings,)).start()
+        settings.status = "RENDERING"
         return {"FINISHED"}
 
 
