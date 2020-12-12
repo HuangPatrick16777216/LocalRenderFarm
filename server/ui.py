@@ -32,7 +32,12 @@ class RENDERSERVER_PT_Main(Panel):
         settings = context.scene.render_server
 
         if settings.status == "NOT_STARTED":
+            layout.prop(settings, "ip")
             layout.operator("render_server.start")
+        elif settings.status == "STARTED":
+            row = layout.row(align=True)
+            row.prop(settings, "frame_start")
+            row.prop(settings, "frame_end")
 
 
 classes = (
