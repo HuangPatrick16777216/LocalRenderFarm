@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import os
 import socket
 import threading
 import pickle
@@ -25,9 +26,24 @@ conn = None
 
 
 class Conn:
+    msg_len = 16777216
+
     def __init__(self, ip, port):
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((ip, port))
+        threading.Thread(target=self.start).start()
+
+    def start(self):
+        save_path = os.path.join(os.path.realpath(os.path.dirname(__file__)), "render.jpg")
+        while True:
+            msg = self.recv()
+            if msg["type"] == "render":
+                bpy.context.scene.frame_set(msg["frame"])
+                bpy.ops.render.render()
+                bpy.data.images.get("Render Result").save_render(save_path)
+                with open(save_path, "rb") as file:
+                    data = file.read()
+                self.send({"type": "image", "image": data})
 
     def send(self, obj):
         self.conn.send(pickle.dumps(obj))
