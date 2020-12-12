@@ -31,6 +31,13 @@ class RENDERCLIENT_PT_Main(Panel):
         layout = self.layout
         settings = context.scene.render_client
 
+        if settings.status == "NOT_STARTED":
+            layout.prop(settings, "ip")
+            layout.operator("render_client.connect")
+
+        elif settings.status == "CONNECTED":
+            layout.label(text="Waiting for server to start.")
+
 
 classes = (
     RENDERCLIENT_PT_Main,
