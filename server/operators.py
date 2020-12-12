@@ -21,13 +21,15 @@ import atexit
 import bpy
 from bpy.types import Operator
 
+server = None
+
 
 class Server:
     def __init__(self, ip, port):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((ip, port))
 
-        clients = []
+        self.clients = []
 
     def start(self):
         self.server.listen()
@@ -42,7 +44,13 @@ class RENDERSERVER_OT_Start(Operator):
     bl_idname = "render_server.start"
 
     def execute(self, context):
+        global server
         settings = context.scene.render_server
+
+        server = Server(settings.ip, 5555)
+        threading.Thread(target=server.start).start()
+
+        settings.status = "STARTED"
         return {"FINISHED"}
 
 
@@ -51,6 +59,9 @@ classes = (
 )
 
 def register():
+    global server
+    server = None
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
