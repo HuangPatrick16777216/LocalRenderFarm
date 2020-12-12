@@ -18,10 +18,25 @@
 import socket
 import threading
 import pickle
+import time
 import bpy
 from bpy.types import Operator
 
 server = None
+
+
+def render(settings):
+    global server
+    frame = settings.frame_start
+
+    while frame <= settings.frame_end:
+        for client in server.clients:
+            if not client.rendering:
+                client.render(frame)
+                frame += 1
+                break
+
+        time.sleep(0.01)
 
 
 class Server:
@@ -44,12 +59,27 @@ class Client:
     def __init__(self, conn, addr):
         self.conn = conn
         self.addr = addr
+        self.rendering = False
+
+    def render(self, frame):
+        self.rendering = True
+        self.send({"type": "render", "frame": frame})
+
+        while True:
+            msg = self.recv()
+            if msg is not None and msg["type"] == "image":
+                break
+
+        self.rendering = False
 
     def send(self, obj):
         self.conn.send(pickle.dumps(obj))
 
     def recv(self):
-        return pickle.loads(self.conn.recv(self.msg_len))
+        try:
+            return pickle.loads(self.conn.recv(self.msg_len))
+        except:
+            return None
 
 
 class RENDERSERVER_OT_Start(Operator):
@@ -77,6 +107,7 @@ class RENDERSERVER_OT_Render(Operator):
 
     def execute(self, context):
         settings = context.scene.render_server
+        render(settings)
         return {"FINISHED"}
 
 
