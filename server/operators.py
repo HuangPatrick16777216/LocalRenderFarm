@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import os
 import socket
 import threading
 import pickle
@@ -32,7 +33,7 @@ def render(settings):
     while frame <= settings.frame_end:
         for client in server.clients:
             if not client.rendering:
-                client.render(frame)
+                client.render(settings.out_path, frame)
                 frame += 1
                 break
 
@@ -61,13 +62,15 @@ class Client:
         self.addr = addr
         self.rendering = False
 
-    def render(self, frame):
+    def render(self, path, frame):
         self.rendering = True
         self.send({"type": "render", "frame": frame})
 
         while True:
             msg = self.recv()
             if msg is not None and msg["type"] == "image":
+                with open(os.path.join(path, f"{frame}.jpg"), "wb") as file:
+                    file.write(msg["image"])
                 break
 
         self.rendering = False
@@ -107,7 +110,7 @@ class RENDERSERVER_OT_Render(Operator):
 
     def execute(self, context):
         settings = context.scene.render_server
-        render(settings)
+        threading.Thread(target=render, args=(settings,)).start()
         return {"FINISHED"}
 
 
