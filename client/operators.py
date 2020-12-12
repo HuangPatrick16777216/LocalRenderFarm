@@ -21,6 +21,20 @@ import pickle
 import bpy
 from bpy.types import Operator
 
+conn = None
+
+
+class Conn:
+    def __init__(self, ip, port):
+        self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.conn.connect((ip, port))
+
+    def send(self, obj):
+        self.conn.send(pickle.dumps(obj))
+
+    def recv(self):
+        return pickle.loads(self.conn.recv(self.msg_len))
+
 
 class RENDERCLIENT_OT_Connect(Operator):
     """Connects to server."""
@@ -29,6 +43,12 @@ class RENDERCLIENT_OT_Connect(Operator):
     bl_idname = "render_client.connect"
 
     def execute(self, context):
+        global conn
+        settings = context.scene.render_client
+        
+        conn = Conn(settings.ip, 5555)
+        settings.status = "CONNECTED"
+        
         return {"FINISHED"}
 
 
@@ -37,6 +57,9 @@ classes = (
 )
 
 def register():
+    global conn
+    conn = None
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
