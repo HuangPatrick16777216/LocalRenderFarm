@@ -17,7 +17,7 @@
 
 import socket
 import threading
-import atexit
+import pickle
 import bpy
 from bpy.types import Operator
 
@@ -35,6 +35,21 @@ class Server:
         self.server.listen()
         while True:
             conn, addr = self.server.accept()
+            self.clients.append(Client(conn, addr))
+
+
+class Client:
+    msg_len = 16777216
+
+    def __init__(self, conn, addr):
+        self.conn = conn
+        self.addr = addr
+
+    def send(self, obj):
+        self.conn.send(pickle.dumps(obj))
+
+    def recv(self):
+        return pickle.loads(self.conn.recv(self.msg_len))
 
 
 class RENDERSERVER_OT_Start(Operator):
