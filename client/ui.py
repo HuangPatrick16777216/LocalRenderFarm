@@ -36,7 +36,7 @@ class RENDERCLIENT_PT_Main(Panel):
             layout.operator("render_client.connect")
 
         elif settings.status == "CONNECTED":
-            layout.label(text="Waiting for server to start.")
+            layout.label(text="Waiting for command from server.")
 
 
 classes = (
