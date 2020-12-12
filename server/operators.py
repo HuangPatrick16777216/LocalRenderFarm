@@ -69,8 +69,20 @@ class RENDERSERVER_OT_Start(Operator):
         return {"FINISHED"}
 
 
+class RENDERSERVER_OT_Render(Operator):
+    """Starts rendering."""
+    bl_label = "Render"
+    bl_description = "Starts rendering."
+    bl_idname = "render_server.render"
+
+    def execute(self, context):
+        settings = context.scene.render_server
+        return {"FINISHED"}
+
+
 classes = (
     RENDERSERVER_OT_Start,
+    RENDERSERVER_OT_Render
 )
 
 def register():
