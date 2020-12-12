@@ -31,6 +31,9 @@ class RENDERSERVER_PT_Main(Panel):
         layout = self.layout
         settings = context.scene.render_server
 
+        if settings.status == "NOT_STARTED":
+            layout.operator("render_server.start")
+
 
 classes = (
     RENDERSERVER_PT_Main,
