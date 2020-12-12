@@ -15,8 +15,24 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import socket
+import threading
+import atexit
 import bpy
 from bpy.types import Operator
+
+
+class Server:
+    def __init__(self, ip, port):
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.bind((ip, port))
+
+        clients = []
+
+    def start(self):
+        self.server.listen()
+        while True:
+            conn, addr = self.server.accept()
 
 
 class RENDERSERVER_OT_Start(Operator):
