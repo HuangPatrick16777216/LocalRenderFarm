@@ -1,2 +1,4 @@
 server.zip
 client.zip
+*.vscode
+*.pyc
