@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import time
 import bpy
 from bpy.types import Panel
 
@@ -35,6 +36,7 @@ class RENDERSERVER_PT_Main(Panel):
         if settings.status == "NOT_STARTED":
             layout.prop(settings, "ip")
             layout.operator("render_server.start")
+
         elif settings.status == "STARTED":
             row = layout.row(align=True)
             row.prop(settings, "frame_start")
@@ -45,7 +47,6 @@ class RENDERSERVER_PT_Main(Panel):
             layout.label(text="Waiting for clients...")
 
             box = layout.box()
-            
             num_clients = len(server.clients)
             num_text = f"{num_clients} client connected." if num_clients == 1 else f"{num_clients} clients connected."
             box.label(text=num_text)
@@ -54,6 +55,18 @@ class RENDERSERVER_PT_Main(Panel):
                 col = box.column(align=True)
                 for client in server.clients:
                     col.label(text=client.addr[0])
+
+        elif settings.status == "RENDERING":
+            layout.label(text="Rendering")
+            box = layout.box()
+            box.label(text="Client statuses:")
+
+            col = box.column(align=True)
+            for client in server.clients:
+                col.label(text=f"{client.addr[0]}: {client.curr_frame}")
+
+            time.sleep(0.01)
+            self.draw()
 
 
 classes = (
