@@ -28,6 +28,7 @@ class RENDERSERVER_PT_Main(Panel):
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
+        from .operators import server
         layout = self.layout
         settings = context.scene.render_server
 
@@ -38,6 +39,19 @@ class RENDERSERVER_PT_Main(Panel):
             row = layout.row(align=True)
             row.prop(settings, "frame_start")
             row.prop(settings, "frame_end")
+            
+            layout.label(text="Waiting for clients...")
+
+            box = layout.box()
+            
+            num_clients = len(server.clients)
+            num_text = f"{num_clients} client connected." if num_clients == 1 else f"{num_clients} clients connected."
+            box.label(text=num_text)
+
+            if num_clients > 0:
+                col = box.column(align=True)
+                for client in server.clients:
+                    col.label(text=client.addr[0])
 
 
 classes = (
