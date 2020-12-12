@@ -28,6 +28,12 @@ class RenderServerProps(PropertyGroup):
         description="Your local IP address"
     )
 
+    out_path: StringProperty(
+        name="Output Path",
+        description="Output path of render",
+        subtype="DIR_PATH"
+    )
+
     frame_start: IntProperty(
         name="Start",
         description="Starting frame to render (inclusive)",
