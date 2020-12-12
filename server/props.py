@@ -22,7 +22,12 @@ from bpy.props import BoolProperty, IntProperty, FloatProperty, StringProperty, 
 
 class RenderServerProps(PropertyGroup):
     status: StringProperty(default="NOT_STARTED")
-    
+
+    ip: StringProperty(
+        name="IP Address",
+        description="Your local IP address"
+    )
+
     frame_start: IntProperty(
         name="Start",
         description="Starting frame to render (inclusive)",
