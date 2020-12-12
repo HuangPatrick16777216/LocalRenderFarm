@@ -39,6 +39,8 @@ class RENDERSERVER_PT_Main(Panel):
             row = layout.row(align=True)
             row.prop(settings, "frame_start")
             row.prop(settings, "frame_end")
+            layout.prop(settings, "out_path")
+            layout.operator("render_server.render")
             
             layout.label(text="Waiting for clients...")
 
