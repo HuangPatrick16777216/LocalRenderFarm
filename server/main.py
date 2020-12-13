@@ -75,8 +75,10 @@ class TextInput:
         self.label_pos = (loc[0] + (size[0]-label.get_width()) // 2, loc[1] + (size[1]-label.get_height()) // 2)
         self.typing = False
         self.cursor_pos = 0
+        self.frame = 0
 
     def draw(self, window, events):
+        self.frame += 1
         loc = self.loc
         size = self.size
 
@@ -88,6 +90,20 @@ class TextInput:
             text = self.font.render(self.text, 1, BLACK)
             text_pos = (loc[0] + (size[0]-text.get_width()) // 2, loc[1] + (size[1]-text.get_height()) // 2)
             window.blit(text, text_pos)
+
+        if self.typing:
+            cursor_x = self.font.render(self.text[:self.cursor_pos], 1, BLACK).get_width()
+            pygame.draw.line(window, BLACK, (cursor_x, loc[1]+10), (cursor_x, loc[1]+size[1]-10))
+
+        mouse_pos = pygame.mouse.get_pos()
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if loc[0] <= mouse_pos[0] <= loc[0]+size[0] and loc[1] <= mouse_pos[1] <= loc[1]+size[1]:
+                    self.typing = True
+                else:
+                    self.typing = False
+            elif event.type == pygame.KEYDOWN:
+                pass
 
 
 class Server:
