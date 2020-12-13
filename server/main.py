@@ -25,16 +25,19 @@ pygame.display.set_caption("Local Render Farm - Server")
 
 class Button:
     def __init__(self, loc, size, text):
-        self._loc = loc
-        self._size = size
-        self._text = text
-        self._text_loc = (loc[0] + (size[0]-text.get_width()) // 2, loc[1] + (size[1]-text.get_height()) // 2)
-
-        self._clicked = False
-        self._hovered = False
+        self.loc = loc
+        self.size = size
+        self.text = text
+        self.text_loc = (loc[0] + (size[0]-text.get_width()) // 2, loc[1] + (size[1]-text.get_height()) // 2)
 
     def draw(self, window, events):
-        pass
+        loc = self.loc
+        size = self.size
+        bg_col = (GRAY if self.clicked() else GRAY_LIGHT) if self.hovered() else WHITE
+
+        pygame.draw.rect(window, bg_col, loc+size)
+        pygame.draw.rect(window, BLACK, loc+size, 3)
+        window.blit(self.text, self.text_loc)
 
     def clicked(self, events):
         click = False
@@ -45,8 +48,8 @@ class Button:
 
         if click:
             mouse_pos = pygame.mouse.get_pos()
-            loc = self._loc
-            size = self._size
+            loc = self.loc
+            size = self.size
             if loc[0] <= mouse_pos[0] <= loc[0]+size[0] and loc[1] <= mouse_pos[1] <= loc[1]+size[1]:
                 return True
 
@@ -54,8 +57,8 @@ class Button:
     
     def hovered(self):
         mouse_pos = pygame.mouse.get_pos()
-        loc = self._loc
-        size = self._size
+        loc = self.loc
+        size = self.size
         if loc[0] <= mouse_pos[0] <= loc[0]+size[0] and loc[1] <= mouse_pos[1] <= loc[1]+size[1]:
             return True
         return False
