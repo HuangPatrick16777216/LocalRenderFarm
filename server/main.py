@@ -51,6 +51,14 @@ class Button:
                 return True
 
         return False
+    
+    def hovered(self):
+        mouse_pos = pygame.mouse.get_pos()
+        loc = self._loc
+        size = self._size
+        if loc[0] <= mouse_pos[0] <= loc[0]+size[0] and loc[1] <= mouse_pos[1] <= loc[1]+size[1]:
+            return True
+        return False
 
 
 class Server:
