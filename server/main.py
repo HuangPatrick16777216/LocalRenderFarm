@@ -72,7 +72,7 @@ class TextInput:
         self.label = font.render(label, 1, BLACK)
         self.text = init_text
 
-        self.label_pos = (loc[0] + (size[0]-label.get_width()) // 2, loc[1] + (size[1]-label.get_height()) // 2)
+        self.label_pos = (loc[0] + (size[0]-self.label.get_width()) // 2, loc[1] + (size[1]-self.label.get_height()) // 2)
         self.typing = False
         self.cursor_pos = 0
         self.frame = 0
@@ -84,16 +84,16 @@ class TextInput:
 
         pygame.draw.rect(window, WHITE, loc+size)
         pygame.draw.rect(window, BLACK, loc+size, 3)
+        text = self.font.render(self.text, 1, BLACK)
+        text_pos = (loc[0] + (size[0]-text.get_width()) // 2, loc[1] + (size[1]-text.get_height()) // 2)
         if not self.typing and self.text == "":
             window.blit(self.label, self.label_pos)
         else:
-            text = self.font.render(self.text, 1, BLACK)
-            text_pos = (loc[0] + (size[0]-text.get_width()) // 2, loc[1] + (size[1]-text.get_height()) // 2)
             window.blit(text, text_pos)
 
-        if self.typing:
+        if self.typing and (self.frame//30) % 2 == 0:
             cursor_x = self.font.render(self.text[:self.cursor_pos], 1, BLACK).get_width()
-            pygame.draw.line(window, BLACK, (cursor_x, loc[1]+10), (cursor_x, loc[1]+size[1]-10))
+            pygame.draw.line(window, BLACK, (text_pos[0]+cursor_x, loc[1]+10), (text_pos[0]+cursor_x, loc[1]+size[1]-10))
 
         mouse_pos = pygame.mouse.get_pos()
         for event in events:
@@ -108,16 +108,17 @@ class TextInput:
                 elif event.key == pygame.K_LEFT:
                     self.cursor_pos = max(0, self.cursor_pos - 1)
                 elif event.key == pygame.K_RIGHT:
-                    self.cursor_pos = max(len(self.text), self.cursor_pos + 1)
+                    self.cursor_pos = min(len(self.text), self.cursor_pos + 1)
                 elif event.key == pygame.K_BACKSPACE:
                     if self.cursor_pos > 0:
-                        self.text = self.text[:self.cursor_pos] + self.text[self.cursor_pos+1:]
+                        self.text = self.text[:self.cursor_pos-1] + self.text[self.cursor_pos:]
                         self.cursor_pos -= 1
                 elif event.key == pygame.K_DELETE:
                     if self.cursor_pos < len(self.text):
-                        self.text = self.text[:self.cursor_pos+1] + self.text[self.cursor_pos+2:]
+                        self.text = self.text[:self.cursor_pos] + self.text[self.cursor_pos+1:]
                 else:
                     self.text = self.text[:self.cursor_pos] + event.unicode + self.text[self.cursor_pos:]
+                    self.cursor_pos += 1
 
 
 class Server:
@@ -134,6 +135,7 @@ class Server:
 
 
 def main():
+    asdf = TextInput((100, 100), (200, 50), pygame.font.SysFont("arial", 24), "asdf")
     clock = pygame.time.Clock()
     while True:
         clock.tick(FPS)
@@ -145,6 +147,7 @@ def main():
                 return
 
         WINDOW.fill(WHITE)
+        asdf.draw(WINDOW, events)
 
 
 SCREEN = (1600, 900)
