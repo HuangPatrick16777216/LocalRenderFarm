@@ -77,6 +77,20 @@ class Server:
             conn, addr = self.server.accept()
 
 
+def main():
+    clock = pygame.time.Clock()
+    while True:
+        clock.tick(FPS)
+        pygame.display.update()
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+        WINDOW.fill(WHITE)
+
+
 SCREEN = (1600, 900)
 FPS = 60
 WINDOW = pygame.display.set_mode(SCREEN)
@@ -86,3 +100,5 @@ GRAY_DARK = (64, 64, 64)
 GRAY = (128, 128, 128)
 GRAY_LIGHT = (192, 192, 192)
 WHITE = (255, 255, 255)
+
+main()
