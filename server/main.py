@@ -33,7 +33,7 @@ class Button:
     def draw(self, window, events):
         loc = self.loc
         size = self.size
-        bg_col = (GRAY if self.clicked() else GRAY_LIGHT) if self.hovered() else WHITE
+        bg_col = (GRAY if self.clicked(events) else GRAY_LIGHT) if self.hovered() else WHITE
 
         pygame.draw.rect(window, bg_col, loc+size)
         pygame.draw.rect(window, BLACK, loc+size, 3)
@@ -62,6 +62,32 @@ class Button:
         if loc[0] <= mouse_pos[0] <= loc[0]+size[0] and loc[1] <= mouse_pos[1] <= loc[1]+size[1]:
             return True
         return False
+
+
+class TextInput:
+    def __init__(self, loc, size, font, label, init_text=""):
+        self.loc = loc
+        self.size = size
+        self.font = font
+        self.label = font.render(label, 1, BLACK)
+        self.text = init_text
+
+        self.label_pos = (loc[0] + (size[0]-label.get_width()) // 2, loc[1] + (size[1]-label.get_height()) // 2)
+        self.typing = False
+        self.cursor_pos = 0
+
+    def draw(self, window, events):
+        loc = self.loc
+        size = self.size
+
+        pygame.draw.rect(window, WHITE, loc+size)
+        pygame.draw.rect(window, BLACK, loc+size, 3)
+        if not self.typing and self.text == "":
+            window.blit(self.label, self.label_pos)
+        else:
+            text = self.font.render(self.text, 1, BLACK)
+            text_pos = (loc[0] + (size[0]-text.get_width()) // 2, loc[1] + (size[1]-text.get_height()) // 2)
+            window.blit(text, text_pos)
 
 
 class Server:
