@@ -102,8 +102,22 @@ class TextInput:
                     self.typing = True
                 else:
                     self.typing = False
-            elif event.type == pygame.KEYDOWN:
-                pass
+            elif event.type == pygame.KEYDOWN and self.typing:
+                if event.key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_TAB):
+                    self.typing = False
+                elif event.key == pygame.K_LEFT:
+                    self.cursor_pos = max(0, self.cursor_pos - 1)
+                elif event.key == pygame.K_RIGHT:
+                    self.cursor_pos = max(len(self.text), self.cursor_pos + 1)
+                elif event.key == pygame.K_BACKSPACE:
+                    if self.cursor_pos > 0:
+                        self.text = self.text[:self.cursor_pos] + self.text[self.cursor_pos+1:]
+                        self.cursor_pos -= 1
+                elif event.key == pygame.K_DELETE:
+                    if self.cursor_pos < len(self.text):
+                        self.text = self.text[:self.cursor_pos+1] + self.text[self.cursor_pos+2:]
+                else:
+                    self.text = self.text[:self.cursor_pos] + event.unicode + self.text[self.cursor_pos:]
 
 
 class Server:
